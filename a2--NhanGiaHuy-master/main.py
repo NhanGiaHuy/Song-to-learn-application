@@ -4,7 +4,7 @@ Date:6/1/2019
 Brief Project Description: Create a GUI for an application show what songs user
 learnt and not learn. The app also allow to add more song, sorting or mark as
 learnt
-GitHub URL: https://github.com/JCUS-CP1404/a2--NhanGiaHuy
+GitHub URL: https://github.com/NhanGiaHuy/Song-to-learn-application
 """
 
 """
