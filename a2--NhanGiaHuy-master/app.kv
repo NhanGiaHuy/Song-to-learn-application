@@ -1,0 +1,213 @@
+#: import CheckBox kivy.uix.checkbox
+# Main Layout
+BoxLayout:
+	id: main_layout
+	# Give the main layout an ID
+	orientation: 'vertical'
+	spacing: 2
+# Pop up for adding
+	Popup:
+		id: Adding_Popup
+		size_hint: (0.8, 0.8)
+		# When press to the outside (parent box) dismiss the pop up
+		on_parent:
+            if self.parent == main_layout: self.parent.remove_widget(self)
+        # Give the pop up a title
+		title: "Adding a new song"
+		BoxLayout:
+			orientation: 'vertical'
+			size_hint: (0.8, 0.8)
+			spacing: 20
+			Label:
+				size_hint_y: 0.05
+				id: add_prompt_1
+				text: 'Enter all detail to add a new song'
+				color: (1, 0, 0, 1)
+			Label:
+				size_hint_y: 0.05
+				id: add_prompt_2
+				text: 'The new song added will be marked as unlearned'
+				color: (1, 0, 0, 1)
+			# This is a prompt label, print prompt for every error in input
+			Label:
+				size_hint_y: 0.05
+				id: add_prompt_3
+				text: ''
+				color: (1, 0, 0, 1)
+			BoxLayout:
+				size_hint_y: 0.4
+				orientation: 'horizontal'
+				Label:
+					size_hint_x: 0.3
+					text:"Name of the song: "
+					halign: "left"
+				TextInput:
+					id: add_detail_title
+					size_hint: (0.7, 1)
+					# dont allow enter for new line in text input box
+					# Allow using Tab to move to the next input box
+					multiline: False
+					write_tab:False
+			BoxLayout:
+				size_hint_y: 0.4
+				orientation: 'horizontal'
+				Label:
+					size_hint_x: 0.3
+					text:"Performed by: "
+					halign: "left"
+				TextInput:
+					id: add_detail_artist
+					size_hint: (0.7, 1)
+					multiline: False
+					write_tab: False
+			BoxLayout:
+				size_hint_y: 0.4
+				orientation: 'horizontal'
+				Label:
+					size_hint_x: 0.3
+					text:"Released year: "
+					halign: "left"
+				TextInput:
+					id: add_detail_year
+					size_hint: (0.7, 1)
+					multiline: False
+					write_tab: False
+			BoxLayout:
+				orientation: 'horizontal'
+				size_hint: (1, 0.3)
+				Button:
+					size_hint: (0.22, 1)
+					text:'Add'
+					on_press: app.press_add()
+					on_release: app.radio_button_sort("artist")
+				Button:
+					size_hint: (0.22, 1)
+					text: 'Clear'
+					on_release: add_detail_title.text = ""
+					on_release: add_detail_artist.text = ""
+					on_release: add_detail_year.text = ""
+				Button:
+					size_hint: (0.22, 1)
+					text: 'Cancel'
+					on_release: app.press_cancel_pop_up()
+
+			# This Label is to push the content up in the pop up
+			Label:
+				size_hint_y: 1
+	BoxLayout:
+		orientation: 'horizontal'
+
+# Sidebar Layout (Contain sorting radio buttons, and Adding buttons)
+
+		BoxLayout:
+			orientation: 'vertical'
+			size_hint_x: 0.4
+			# Create a press though rectangle, and give a color to it
+			canvas.before:
+				Color:
+					rgba: (0, 0, 0, .75)
+				Rectangle:
+					# set size and Position to the same with the box
+					size: self.size
+					pos: self.pos
+# Sorting func
+
+			Label:
+				text: 'Sorted by:'
+				size_hint_y: 0.1
+			BoxLayout:
+				orientation: 'horizontal'
+				size_hint_y: 0.1
+
+# Radiobuttons for Sorting func
+
+				CheckBox:
+					group: "sorting"
+					color: (1, 1, 1, 1)
+					size_hint_x: 0.1
+					value: app.Artist
+					active: True
+					# if active, trigger function
+					on_active: app.radio_button_sort("artist")
+				Label:
+					text: 'Artist'
+					color: (1, 1, 1, 1)
+					size_hint_x: 0.12
+				CheckBox:
+					group: "sorting"
+					color: (1, 1, 1, 1)
+					size_hint_x: 0.1
+					value: app.Title
+					on_active: app.radio_button_sort("title")
+				Label:
+					text: 'Title'
+					color: (1, 1, 1, 1)
+					size_hint_x: 0.12
+				CheckBox:
+					group: "sorting"
+					color: (1, 1, 1, 1)
+					size_hint_x: 0.1
+					value: app.Year
+					on_active: app.radio_button_sort("year")
+				Label:
+					text: 'Year'
+					color: (1, 1, 1, 1)
+					size_hint_x: 0.12
+			Button:
+				size_hint_y: 0.1
+				text: 'Add New Song'
+				on_release: app.open_adding_pop_up()
+
+# Pushing label, help to push all functions in sidebar up to its size
+
+			Label:
+				size_hint_y: 1
+
+# Right hand side
+
+		BoxLayout:
+			orientation: 'vertical'
+
+# Top Edit Button and Learning process
+
+			BoxLayout:
+				orientation: 'horizontal'
+				size_hint_y: 0.07
+				canvas.before:
+					Color:
+						rgba: (0, 0, 0, .8)
+					Rectangle:
+						size: self.size
+						pos: self.pos
+				Label:
+					text: app.learn_status
+					# Set text size and box size to align the text in a box
+					text_size: root.width, None
+					size: self.texture_size
+					valign: 'middle'
+					halign: 'center'
+
+# Song list(listView, List Adapter)
+
+			GridLayout:
+				id: list_of_songs
+				orientation: 'vertical'
+				cols: 1
+
+# Status Bar (Bottom)
+
+	BoxLayout:
+		orientation: 'horizontal'
+		size_hint: (1, 0.05)
+		canvas.before:
+			Color:
+				rgba: (0, 0, 0, .8)
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		Label:
+			text: app.main_status
+			text_size: root.width - 20, None
+			size: self.texture_size
+			valign: 'middle'
+			halign: 'right'
